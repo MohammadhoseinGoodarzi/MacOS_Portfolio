@@ -4,24 +4,43 @@ import tailwindcss from "@tailwindcss/vite";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // Plugin to properly serve PDF files
+    {
+      name: "configure-response-headers",
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Handle PDF files specifically
+          if (req.url && req.url.endsWith(".pdf")) {
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Accept-Ranges", "bytes");
+            res.setHeader("Cache-Control", "public, max-age=31536000");
+          }
+          next();
+        });
+      },
+    },
+  ],
+  server: {
+    // Ensure PDF files are served with correct headers
+    headers: {
+      "Accept-Ranges": "bytes",
+    },
+  },
+  // Make it explicit that static assets live in /public
+  publicDir: "public",
   resolve: {
     alias: {
-      "#components": resolve(
-        dirname(fileURLToPath(import.meta.url)),
-        "src/components",
-      ),
-      "#constants": resolve(
-        dirname(fileURLToPath(import.meta.url)),
-        "src/constants",
-      ),
-      "#store": resolve(dirname(fileURLToPath(import.meta.url)), "src/store"),
-      "#hoc": resolve(dirname(fileURLToPath(import.meta.url)), "src/hoc"),
-      "#windows": resolve(
-        dirname(fileURLToPath(import.meta.url)),
-        "src/windows",
-      ),
+      "#components": resolve(__dirname, "src/components"),
+      "#constants": resolve(__dirname, "src/constants"),
+      "#store": resolve(__dirname, "src/store"),
+      "#hoc": resolve(__dirname, "src/hoc"),
+      "#windows": resolve(__dirname, "src/windows"),
     },
   },
 });
