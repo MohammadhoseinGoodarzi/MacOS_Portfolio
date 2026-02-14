@@ -1,5 +1,3 @@
-"use client";
-
 import { Download } from "lucide-react";
 import WindowWrapper from "#hoc/WindowWrapper.jsx";
 import { WindowControls } from "#components/index.js";
@@ -10,7 +8,7 @@ import "react-pdf/dist/Page/TextLayer.css";
 
 // Set up PDF.js worker - use jsdelivr CDN with HTTPS and correct version
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-const RESUME_PATH = "/files/resume-Goodarzi.pdf";
+const RESUME_PATH = "/files/Mohammad-Hosein-Goodarzi.pdf";
 
 function Resume() {
   return (
